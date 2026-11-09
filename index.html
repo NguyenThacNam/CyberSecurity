@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SOC Prep</title>
+  <meta name="description" content="Ôn tập An ninh mạng, Quản trị mạng, tiếng Anh chuyên ngành và lab thực hành – chuẩn bị phỏng vấn SOC Tier 1.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z' fill='%232563eb'/%3E%3Cpath d='m11 16 3.5 3.5L21 13' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z"/><path class="tick" d="m11 16 3.5 3.5L21 13"/></svg>
+      <span>SOC Prep</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#/" data-route="home">Hôm nay</a>
+      <a href="#/review" data-route="review">Kiến thức</a>
+      <a href="#/english" data-route="english">Tiếng Anh</a>
+      <a href="#/weak" data-route="weak">Điểm yếu</a>
+      <a href="#/labs" data-route="labs">Lab</a>
+      <a href="#/roadmap" data-route="roadmap">Lộ trình</a>
+      <a href="#/settings" data-route="settings" title="Cài đặt">Cài đặt</a>
+    </nav>
+  </header>
+
+  <main id="app" class="container" tabindex="-1"></main>
+
+  <footer class="footer container">
+    <span id="sync-status">Tiến độ lưu trên trình duyệt này</span>
+  </footer>
+
+  <!-- Dữ liệu nội dung (thiếu file nào web vẫn chạy) -->
+  <script src="data/cards.js"></script>
+  <script src="data/weak.js"></script>
+  <script src="data/vocab.js"></script>
+  <script src="data/logs.js"></script>
+  <script src="data/labs.js"></script>
+  <script src="data/roadmap.js"></script>
+
+  <!-- Ứng dụng -->
+  <script src="js/store.js"></script>
+  <script src="js/srs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
