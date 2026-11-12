@@ -451,16 +451,22 @@
     var doneN = steps.filter(function (_, i) { return st.steps[i]; }).length;
     return '<p><a class="link" href="#/labs">← Danh sách lab</a></p>' +
       '<div class="pagehead"><div><div class="chips">' + trackChip(l.track) + '<span class="chip ghost">Tuần ' + esc(l.week) + '</span>' +
+      (l.optional ? '<span class="chip warn">Tùy chọn · cần VPS</span>' : '') +
       (l.time ? '<span class="chip ghost">⏱ ' + esc(l.time) + '</span>' : '') + (l.mitre ? '<span class="chip ghost">MITRE ' + esc(l.mitre) + '</span>' : '') +
       '</div><h1>' + esc(l.id) + ' · ' + esc(l.title) + '</h1><p>' + (l.goal || "") + '</p></div></div>' +
       (l.prereq && l.prereq.length ? '<p class="muted">Cần làm trước: ' + l.prereq.map(function (p) { return '<a class="link" href="#/lab/' + encodeURIComponent(p) + '">' + esc(p) + '</a>'; }).join(", ") + '</p>' : '') +
       (l.concepts && l.concepts.length ? '<div class="chips">' + l.concepts.map(function (c) { return '<span class="chip en">' + esc(c) + '</span>'; }).join("") + '</div>' : '') +
+      (l.theory && l.theory.length ? '<details class="theory"><summary>📚 Lý thuyết dùng trong lab (' + l.theory.length + ' khái niệm) – đọc trước khi làm</summary>' +
+        l.theory.map(function (t) { return '<div class="field"><div class="flabel">' + esc(t.title) + '</div><div class="fbody">' + t.body + '</div></div>'; }).join("") + '</details>' : '') +
+      (l.pitfalls && l.pitfalls.length ? '<details class="theory pitfalls"><summary>⚠️ Lỗi hay gặp (' + l.pitfalls.length + ')</summary><ul class="bul">' +
+        l.pitfalls.map(function (p) { return '<li>' + p + '</li>'; }).join("") + '</ul></details>' : '') +
       '<div class="panel sticky-progress"><div class="row"><span>Tiến độ</span><b>' + doneN + '/' + steps.length + ' bước</b></div>' + bar(doneN, steps.length, "Bước") + '</div>' +
       '<ol class="steps">' + steps.map(function (s, i) {
         return '<li class="step' + (st.steps[i] ? " done" : "") + '">' +
           '<label class="stephead"><input type="checkbox" data-action="step" data-lab="' + esc(id) + '" data-i="' + i + '"' + (st.steps[i] ? " checked" : "") + '><span>' + esc(s.title) + '</span></label>' +
           '<div class="stepbody">' + (s.text ? '<p>' + s.text + '</p>' : '') +
           (s.code ? '<div class="code"><pre><code>' + esc(s.code) + '</code></pre><button class="copy" data-action="copy">Sao chép</button></div>' : '') +
+          (s.why ? '<div class="why"><b>🧠 Vì sao:</b> ' + s.why + '</div>' : '') +
           (s.tip ? '<div class="tip">💡 ' + s.tip + '</div>' : '') + '</div></li>';
       }).join("") + '</ol>' +
       (l.verify && l.verify.length ? '<h3 class="sec">✅ Kiểm tra</h3><ul class="bul">' + l.verify.map(function (v) { return "<li>" + v + "</li>"; }).join("") + '</ul>' : '') +

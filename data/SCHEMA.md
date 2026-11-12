@@ -103,6 +103,13 @@ Lấy từ các mục "Câu hỏi sai / Câu trả lời sai / Câu hỏi chú �
   verify: ["Cách kiểm tra đã làm đúng …"],
   questions: ["Câu hỏi tự kiểm tra …"],
   output: "Đầu ra cần nộp vào portfolio: …",
-  mitre: "T1110"              // tùy chọn, cho lab SOC
+  mitre: "T1110",             // tùy chọn, cho lab SOC
+  optional: true,             // tùy chọn: lab không bắt buộc (vd cần VPS)
+  pitfalls: ["Lỗi hay gặp …"],  // tùy chọn: danh sách lỗi hay gặp
+  theory: [                   // tùy chọn: lý thuyết đọc trước
+    { title: "Least privilege", body: "…" }
+  ]
 }
+// Mỗi step có thể thêm: why: "Vì sao làm bước này + lý thuyết liên quan"
 ```
+Lab thêm sau có thể đặt ở file riêng (vd `labs-vps.js`) và nối vào bằng `DATA.labs = (DATA.labs || []).concat([...])`.

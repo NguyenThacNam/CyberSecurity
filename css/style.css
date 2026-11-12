@@ -226,6 +226,12 @@ select, input[type="number"], input[type="search"], textarea { font: inherit; co
 .code { position: relative; }
 .copy { position: absolute; top: 8px; right: 8px; font: inherit; font-size: .75rem; padding: 2px 8px; border-radius: 6px; border: 1px solid #334155; background: #1e293b; color: #e2e8f0; cursor: pointer; }
 .tip { background: var(--primary-soft); border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: .92rem; }
+.why { background: var(--soc-soft); border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: .92rem; }
+.theory { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin: 12px 0; }
+.theory summary { cursor: pointer; font-weight: 600; }
+.theory[open] summary { margin-bottom: 8px; }
+.pitfalls { border-color: var(--warn); background: var(--warn-soft); }
+.pitfalls summary { color: var(--warn); }
 .bul { padding-left: 1.3em; }
 .notes { width: 100%; min-height: 140px; resize: vertical; }
 .sticky-progress { position: sticky; top: 60px; z-index: 5; }

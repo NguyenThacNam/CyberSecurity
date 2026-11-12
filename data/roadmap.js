@@ -30,7 +30,8 @@ DATA.roadmap = [
       { id: "r2-4", type: "lab", text: "N3 · Dựng Windows Server AD, join máy client (hướng dẫn ở giai đoạn 2)" },
       { id: "r2-5", type: "lab", text: "N4 · Cấu hình DNS + DHCP" },
       { id: "r2-6", type: "lab", text: "N5 · GPO: chính sách mật khẩu, khóa tài khoản" },
-      { id: "r2-7", type: "writeup", text: "Tài liệu cấu hình AD/GPO + ảnh chụp" }
+      { id: "r2-7", type: "writeup", text: "Tài liệu cấu hình AD/GPO + ảnh chụp" },
+      { id: "r2-8", type: "lab", text: "VPS-1 · Gia cố VPS Ubuntu (tùy chọn – nếu đã thuê VPS)", link: "#/lab/VPS-1" }
     ]
   },
   {
