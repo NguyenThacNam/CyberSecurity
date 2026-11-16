@@ -35,6 +35,16 @@ DATA.labs = (DATA.labs || []).concat([
       "<b><code>ufw: command not found</code></b>: image của nhà cung cấp là bản rút gọn → <code>sudo apt install -y ufw</code>.",
       "<b>Đóng phiên cũ trước khi kiểm tra</b> → có thể tự khóa mình ở ngoài. Luôn kiểm tra ở cửa sổ mới."
     ],
+    keycards: [
+      { front: "Vì sao đăng nhập SSH bằng key an toàn hơn bằng mật khẩu?", def: "Key dựa trên <b>mật mã bất đối xứng</b>: server chỉ giữ khóa công khai, máy bạn ký một đề bài ngẫu nhiên bằng khóa bí mật – <b>khóa bí mật không bao giờ được gửi đi</b>. Mật khẩu thì có thể bị <b>brute force</b> hoặc lộ; key ed25519 không thể đoán thử trong thực tế.", example: "Mật khẩu = khóa số ai đứng ngoài cũng bấm thử được; key = chìa vật lý chỉ bạn giữ.", trap: "Khóa công khai (.pub) lộ ra không sao; chỉ file KHÔNG có đuôi .pub mới phải giữ kín.", interview: "Bạn gia cố SSH trên một VPS mới như thế nào?" },
+      { front: "Passphrase của SSH key khác mật khẩu user ở điểm nào?", def: "<b>Passphrase</b> mã hóa file khóa bí mật <b>trên máy bạn</b> – máy bạn kiểm tra. <b>Mật khẩu user</b> do <b>server</b> kiểm tra. Sau khi gia cố: vào bằng key (có thể hỏi passphrase), mật khẩu user chỉ dùng cho <code>sudo</code> và Console dự phòng.", trap: "SSH hỏi 'Enter passphrase for key' = tốt (key đang được dùng); hỏi \"user@host's password\" = server chưa nhận key.", interview: "Nếu laptop chứa SSH key bị mất, passphrase giúp gì?" },
+      { front: "<code>PermitRootLogin no</code> và <code>PasswordAuthentication no</code> có tác dụng gì?", def: "Cấm tài khoản <b>root</b> đăng nhập qua SSH (bot luôn nhắm root vì ai cũng biết tên) và <b>tắt hoàn toàn đăng nhập bằng mật khẩu</b> → brute force vô dụng. Đặt trong file <code>/etc/ssh/sshd_config.d/00-…conf</code> vì giá trị đọc được đầu tiên sẽ thắng.", trap: "Phải thử đăng nhập bằng key ở cửa sổ MỚI thành công trước khi tắt mật khẩu, nếu không sẽ tự khóa mình ở ngoài.", interview: "Sau khi sửa cấu hình SSH, bạn kiểm tra nó có hiệu lực bằng cách nào? (<code>sshd -t</code>, <code>sshd -T</code>, thử 2 chiều)" },
+      { front: "File <code>~/.ssh/authorized_keys</code> là gì? Vì sao SOC để ý file này?", def: "Danh sách khóa công khai <b>được phép đăng nhập</b> vào user đó. Quyền bắt buộc: thư mục 700, file 600. Kẻ tấn công hay <b>thêm key của chúng vào đây để quay lại</b> – persistence <b>MITRE T1098.004</b>.", example: "Như danh sách ổ khóa được lắp trên cửa – thêm một ổ lạ là có người khác vào được.", trap: "<code>&gt;</code> ghi đè (xóa key cũ), <code>&gt;&gt;</code> ghi thêm.", interview: "Nghi một máy Linux bị cài cửa hậu, bạn kiểm tra những file nào?" },
+      { front: "UFW <code>default deny incoming</code> nghĩa là gì? Vì sao phải <code>allow 22/tcp</code> trước <code>ufw enable</code>?", def: "<b>Default deny</b>: chặn mọi kết nối vào, chỉ mở port được cho phép (allowlist) → thu nhỏ attack surface. Nếu bật firewall trước khi mở 22, phiên SSH có thể bị cắt và bạn mất quyền truy cập.", trap: "UFW là firewall stateful: kết nối do VPS chủ động tạo ra (tải update) thì gói trả lời vẫn được vào dù deny incoming.", interview: "Allowlist và denylist khác nhau thế nào? Cái nào an toàn hơn?" },
+      { front: "Fingerprint của server đột nhiên thay đổi khi SSH vào – có thể là gì?", def: "SSH cảnh báo <i>REMOTE HOST IDENTIFICATION HAS CHANGED</i>. Có thể server được <b>cài lại</b> (vô hại) hoặc đang bị tấn công <b>on-path / MITM</b>. Không được bỏ qua – xác minh với nhà cung cấp/console trước khi xóa dòng cũ trong <code>known_hosts</code>.", interview: "TOFU (Trust On First Use) là gì và điểm yếu của nó?" },
+      { front: "Log có top username <code>ubuntu, admin, centos, linaro</code> từ nhiều IP cùng dải /24, số lượt đều nhau – kết luận gì?", def: "Bot dùng danh sách <b>tài khoản mặc định</b> của cloud/IoT → <b>T1110.001 Password Guessing</b> + cố lạm dụng <b>T1078.001 Default Accounts</b>. Nhiều IP cùng dải chia tải đều = <b>brute force phân tán</b> (botnet).", trap: "Chặn từng IP ít hiệu quả vì botnet đổi IP liên tục – biện pháp gốc là tắt mật khẩu, dùng key.", interview: "Bạn nhận cảnh báo hàng nghìn lần SSH thất bại trên một server – bạn làm gì?" },
+      { front: "Sau một đợt brute force, làm sao chứng minh không ai đăng nhập trái phép?", def: "Lọc mọi dòng <code>Accepted</code> trong <code>auth.log</code> → chỉ được là IP của mình; đối chiếu <b>fingerprint</b> key trong log với key của mình; xem <code>last -i</code> không có phiên lạ; kiểm tra reboot khớp với lúc mình làm. Quy về <b>một múi giờ</b> khi dựng timeline.", trap: "Chỉ đếm số lượt tấn công là chưa đủ – câu hỏi số 1 luôn là “có ai vào được không?”.", interview: "Vì sao log trên cùng một máy có thể lẫn +00:00 và +07:00? Ảnh hưởng gì khi điều tra?" }
+    ],
     steps: [
       {
         title: "Chuẩn bị: biết mình đang gõ lệnh ở đâu",
@@ -151,5 +161,119 @@ DATA.labs = (DATA.labs || []).concat([
       "Kể tên các lớp phòng thủ trong lab này theo tư duy defense in depth."
     ],
     output: "Writeup <b>\"Gia cố VPS Ubuntu 24.04 & điều tra brute force SSH\"</b>: (1) các bước gia cố + lý do; (2) <code>sshd -T</code>, <code>ufw status verbose</code>, <code>ss -tulpn</code>; (3) số liệu tấn công: thời gian quan sát, tổng lượt, top username và ý nghĩa, top IP và nhận xét dải mạng, MITRE T1110.001 / T1078.001; (4) xác minh không xâm nhập: lọc <code>Accepted</code>, đối chiếu fingerprint, <code>last</code>, lưu ý múi giờ; (5) bài học & đề xuất (fail2ban, Wazuh agent). <b>Che IP VPS và IP nhà bạn.</b>"
+  },
+
+  {
+    id: "VPS-2",
+    track: "chung",
+    week: 2,
+    optional: true,
+    title: "Kiểm kê hệ thống mới nhận & lập baseline hiệu năng",
+    goal: "Với một máy chủ vừa nhận: <b>kiểm kê</b> tài khoản, quyền, tác vụ định kỳ, dịch vụ để tìm thứ bất thường (dấu hiệu <b>persistence</b>); <b>tắt dịch vụ thừa</b>; rồi <b>đo baseline hiệu năng</b> (CPU, RAM, ổ đĩa, mạng, steal) và <b>tra nguồn gốc IP</b> (ASN). Có baseline thì sau này mới nhận ra bất thường.",
+    time: "60–75 phút",
+    prereq: ["VPS-1"],
+    concepts: ["Asset inventory", "Persistence TA0003", "Baseline", "Anomaly detection", "Steal time", "IOPS", "ASN / OSINT", "Shared responsibility"],
+    theory: [
+      { title: "Kiểm kê tài sản & kiểm tra hệ thống (asset inventory / system audit)", body: "Không bảo vệ được thứ mình không biết là có. Khi nhận một máy mới – hoặc khi nghi bị xâm nhập – việc đầu tiên là liệt kê: <b>ai</b> đăng nhập được, <b>ai</b> có quyền quản trị, <b>cái gì</b> tự chạy định kỳ, <b>dịch vụ nào</b> đang chạy, <b>port nào</b> đang mở." },
+      { title: "Persistence – kẻ tấn công “cắm rễ” thế nào (MITRE TA0003)", body: "Sau khi vào được, kẻ tấn công tìm cách <b>quay lại được</b> kể cả khi máy khởi động lại hay bị đổi mật khẩu: tạo tài khoản mới (<b>T1136</b>), thêm SSH key (<b>T1098.004</b>), thêm cron (<b>T1053.003</b>), tạo dịch vụ systemd (<b>T1543.002</b>). Bài kiểm kê này chính là đi tìm những dấu vết đó." },
+      { title: "Baseline & phát hiện bất thường", body: "<b>Baseline</b> = mức “bình thường” của hệ thống (CPU, RAM, mạng, danh sách dịch vụ…). Có baseline mới nhận ra <b>bất thường</b>: CPU đang 2% bỗng 100% liên tục có thể là <b>đào coin trái phép – cryptojacking, MITRE T1496</b> (Khóa 5); lưu lượng ra ngoài tăng vọt có thể là <b>đánh cắp dữ liệu</b> (exfiltration)." },
+      { title: "Ảo hóa: KVM vs OpenVZ/LXC, steal time", body: "<b>KVM</b>: ảo hóa đầy đủ, mỗi VPS có kernel riêng, tài nguyên tách bạch. <b>OpenVZ/LXC</b>: dùng chung kernel với máy chủ, dễ bị bán quá tải (oversell). <b>Steal time (st)</b> = % thời gian CPU ảo của bạn phải chờ vì máy chủ vật lý đang phục vụ VPS khác. Gần 0 là tốt; thường xuyên &gt;5–10% là dấu hiệu oversell." },
+      { title: "Ổ đĩa: IOPS, throughput, vì sao 4k quan trọng", body: "<b>IOPS</b> = số thao tác đọc/ghi mỗi giây; <b>throughput</b> = MB/s. Máy chủ ghi log, database chủ yếu thao tác <b>khối nhỏ 4k</b> → chỉ số 4k IOPS phản ánh trải nghiệm thật nhất. File lớn (512k–1m) cho số MB/s cao nhưng ít liên quan công việc hằng ngày." },
+      { title: "RAM, swap và OOM killer", body: "Hết RAM mà không có <b>swap</b> (phần ổ đĩa dùng làm RAM dự phòng), kernel gọi <b>OOM killer</b> giết bớt tiến trình – có thể giết đúng dịch vụ quan trọng. Có swap: chậm hơn nhưng không sập. Cột <code>available</code> trong <code>free -h</code> mới là RAM thực sự còn dùng được (buff/cache có thể giải phóng)." },
+      { title: "ASN & OSINT cơ bản", body: "<b>ASN</b> (Autonomous System Number) = mã định danh một mạng trên Internet (nhà mạng, cloud, công ty hosting). Tra IP → ASN cho biết IP thuộc <b>ai, ở đâu, loại mạng gì</b>. SOC dùng hằng ngày để <b>làm giàu dữ liệu</b> (enrichment) cho IP tấn công: IP từ cloud/hosting giá rẻ hay IP nhà dân bị chiếm?" },
+      { title: "Shared responsibility với nhà cung cấp", body: "Nhà cung cấp kiểm soát <b>máy chủ vật lý và hypervisor</b> – về kỹ thuật họ luôn có toàn quyền với máy ảo của bạn (<code>qemu-guest-agent</code> là công cụ của họ). Bạn chịu trách nhiệm phần <b>bên trong</b> hệ điều hành. Vì vậy không để dữ liệu nhạy cảm thật trên VPS lab." }
+    ],
+    pitfalls: [
+      "<b>Chạy YABS lúc VPS đang bận</b> (vd đang cập nhật) → kết quả thấp hơn thực tế. Chạy lúc máy rảnh, và nếu nghi ngờ thì chạy lại.",
+      "<b>Đo steal 5 giây lúc sáng sớm</b> rồi kết luận “ổn” → chưa đủ. Đo lại vào giờ cao điểm tối 20–23h.",
+      "<b>Tắt nhầm dịch vụ cần thiết</b> (ssh, systemd-networkd, rsyslog, qemu-guest-agent, getty@tty1) → mất kết nối, mất log hoặc mất Console dự phòng. Chỉ tắt đúng danh sách dịch vụ thừa.",
+      "<b>Thấy RAM 'free' thấp</b> rồi tưởng thiếu RAM → nhìn cột <code>available</code>, không phải <code>free</code>.",
+      "<b>Chạy script tải từ Internet thẳng vào bash</b> (<code>curl … | bash</code>) với nguồn không tin cậy → có thể bị cài mã độc. Chỉ làm với nguồn nổi tiếng, kiểm tra được (YABS trên GitHub)."
+    ],
+    keycards: [
+      { front: "Khi nhận một máy chủ Linux mới (hoặc nghi bị xâm nhập), kiểm tra những gì để tìm persistence?", def: "• User đăng nhập được & user có UID 0<br>• Ai có sudo (<code>group sudo</code>, <code>/etc/sudoers.d/</code>)<br>• <code>authorized_keys</code> của root và các user<br>• Cron & systemd timers<br>• Dịch vụ đang chạy / được bật khi khởi động<br>• Port đang lắng nghe (<code>ss -tulpn</code>)", trap: "Chỉ xem port mở là chưa đủ – cron và SSH key không mở port nào nhưng vẫn là cửa hậu.", interview: "Kể các kỹ thuật persistence trên Linux và cách phát hiện từng cái." },
+      { front: "Steal time (cột <code>st</code>) là gì? Bao nhiêu thì đáng lo?", def: "% thời gian CPU ảo phải <b>chờ</b> vì máy chủ vật lý đang phục vụ VPS khác. Gần 0 là tốt; thường xuyên &gt;5–10% (nhất là giờ cao điểm) là dấu hiệu nhà cung cấp <b>bán quá tải</b>.", example: "Như thuê chung bếp: bạn đứng chờ vì người khác đang dùng bếp.", interview: "VPS chạy chậm dù CPU usage thấp – bạn kiểm tra gì?" },
+      { front: "KVM khác OpenVZ/LXC thế nào?", def: "<b>KVM</b>: ảo hóa đầy đủ, kernel riêng, tài nguyên tách bạch. <b>OpenVZ/LXC</b>: container dùng chung kernel với máy chủ, nhẹ hơn nhưng dễ oversell và hạn chế (không tự đổi kernel, khó chạy một số phần mềm). Kiểm tra bằng <code>systemd-detect-virt</code>.", interview: "Máy ảo (VM) và container khác nhau thế nào về cô lập bảo mật?" },
+      { front: "IOPS khác throughput thế nào? Vì sao 4k IOPS quan trọng với máy chủ log?", def: "<b>IOPS</b> = số thao tác đọc/ghi mỗi giây; <b>throughput</b> = MB/s. Ghi log, database là nhiều thao tác <b>nhỏ (4k)</b> → 4k IOPS phản ánh hiệu năng thật. Ví dụ VPS lab: 4k ≈ 70k IOPS / 290 MB/s → NVMe thật.", trap: "Số GB/s rất to ở khối 1m dễ gây ấn tượng nhưng ít liên quan công việc hằng ngày." },
+      { front: "Baseline hiệu năng giúp gì cho SOC? Cho ví dụ.", def: "Biết mức bình thường mới phát hiện được <b>bất thường</b>. Ví dụ: CPU thường 2% bỗng 100% liên tục → nghi <b>cryptojacking (T1496)</b>; lưu lượng ra ngoài tăng đột biến lúc 2h sáng → nghi <b>exfiltration</b>; xuất hiện dịch vụ/port mới không có trong baseline → nghi persistence.", interview: "Anomaly-based detection khác signature-based detection thế nào?" },
+      { front: "Load average trong <code>uptime</code> đọc thế nào?", def: "3 số = số tiến trình đang chạy/chờ CPU trung bình trong <b>1, 5, 15 phút</b>. So với <b>số nhân CPU</b> (<code>nproc</code>): VPS 1 nhân mà load ≈ 1 là đang dùng hết; &gt; 1 kéo dài là quá tải.", trap: "Load 2.0 trên máy 4 nhân là bình thường; trên máy 1 nhân là quá tải." },
+      { front: "ASN là gì? Tra ASN của một IP để làm gì?", def: "<b>Autonomous System Number</b> – mã định danh một mạng (nhà mạng, cloud, hosting). Tra IP → ASN biết IP thuộc tổ chức nào, ở đâu → <b>làm giàu dữ liệu</b> (enrichment) khi điều tra IP tấn công, hoặc xác minh nhà cung cấp.", example: "VPS lab: AS151858 Interdigi, host IDATA, Đà Nẵng – khớp với thông tin pháp nhân đã tra.", interview: "Bạn nhận một IP đáng ngờ trong cảnh báo – bạn tra những nguồn nào?" },
+      { front: "Swap là gì? Không có swap thì chuyện gì xảy ra khi hết RAM?", def: "Swap = phần ổ đĩa dùng làm RAM dự phòng. Không có swap, khi hết RAM kernel gọi <b>OOM killer</b> giết bớt tiến trình (có thể là dịch vụ quan trọng). Có swap: chậm hơn nhưng không sập.", trap: "Xem RAM còn dùng được ở cột <code>available</code>, không phải <code>free</code>." }
+    ],
+    steps: [
+      {
+        title: "[VPS] Kiểm tra tài khoản & quyền",
+        code: "# User có thể đăng nhập shell\nawk -F: '$7 ~ /(bash|sh)$/ {print $1}' /etc/passwd\n# User có UID 0 (quyền root) - chỉ được là root\nawk -F: '$3 == 0 {print $1}' /etc/passwd\n# Ai có sudo\ngetent group sudo\nsudo ls -la /etc/sudoers.d/\n# Root có SSH key nào không\nsudo cat /root/.ssh/authorized_keys 2>/dev/null || echo \"Khong co\"",
+        why: "Tìm tài khoản lạ (<b>T1136</b>), tài khoản có UID 0 giả danh root, quyền sudo được cấp ngầm, và SSH key lạ (<b>T1098.004</b>) – các cách cắm rễ phổ biến nhất.",
+        tip: "Kết quả mong đợi: chỉ <code>root</code> và user của bạn; UID 0 chỉ có root; sudoers.d chỉ có <code>README</code>. Nếu root có key lạ: có thể của nhà cung cấp – SSH root đã bị cấm (VPS-1) nhưng vẫn nên ghi nhận."
+      },
+      {
+        title: "[VPS] Kiểm tra tác vụ định kỳ (cron & timers)",
+        code: "sudo crontab -l 2>/dev/null; crontab -l 2>/dev/null\nls /etc/cron.d/ /etc/cron.daily/\nsystemctl list-timers --all --no-pager | head -20",
+        why: "Cron/timer lạ là cách kẻ tấn công tự chạy lại mã độc định kỳ (<b>T1053.003</b>). Trên Ubuntu mới, chỉ thấy các tác vụ chuẩn như <code>e2scrub_all</code>, <code>sysstat</code>, <code>apt-daily</code>, <code>logrotate</code>."
+      },
+      {
+        title: "[VPS] Kiểm tra dịch vụ đang chạy",
+        code: "systemctl list-units --type=service --state=running --no-pager\nsystemctl list-unit-files --type=service --state=enabled --no-pager",
+        why: "Dịch vụ systemd lạ là một kiểu persistence (<b>T1543.002</b>). Bảng tham khảo trên VPS Ubuntu:<br>• <b>Cần giữ</b>: ssh, cron, rsyslog, systemd-journald/logind/networkd/timesyncd/udevd, dbus, polkit, unattended-upgrades, <b>qemu-guest-agent</b> (công cụ của nhà cung cấp), <b>getty@tty1</b> (Console dự phòng).<br>• <b>Thừa trên VPS</b>: ModemManager (modem 3G/4G), upower (pin), udisks2 (USB), fwupd (firmware), multipathd (ổ SAN)."
+      },
+      {
+        title: "[VPS] Tắt dịch vụ thừa & so RAM trước/sau",
+        code: "free -h                       # ghi lại cột available TRƯỚC\nsudo systemctl disable --now ModemManager upower udisks2 fwupd multipathd multipathd.socket\nsystemctl list-units --type=service --state=running --no-pager | grep -c running\nfree -h                       # available SAU",
+        why: "<b>Hardening</b>: không cần thì tắt → ít phần mềm có thể chứa lỗ hổng hơn (giảm attack surface) và tiết kiệm RAM – quan trọng với VPS 1GB.",
+        tip: "Báo <code>Unit ... not found</code> với dịch vụ nào thì bỏ qua – nghĩa là nó không tồn tại trên image của bạn."
+      },
+      {
+        title: "[VPS] Thêm swap 1GB",
+        code: "sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile\nsudo mkswap /swapfile && sudo swapon /swapfile\necho '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab\nfree -h        # dòng Swap: 1.0Gi",
+        why: "Tránh <b>OOM killer</b> giết dịch vụ khi sau này cài thêm Wazuh agent / honeypot. Quyền <b>600</b> vì swap có thể chứa dữ liệu từ RAM (mật khẩu, khóa) – không cho user khác đọc.",
+        tip: "Dòng <code>/etc/fstab</code> giúp swap tự bật lại sau mỗi lần khởi động. Chỉ chạy lệnh <code>echo ... tee -a</code> <b>một lần</b>, chạy 2 lần sẽ bị lặp dòng."
+      },
+      {
+        title: "[VPS] Cấu hình thật & loại ảo hóa",
+        code: "nproc; free -h; df -h /\nlscpu | grep -E 'Model name|Hypervisor'\nsystemd-detect-virt        # tốt nhất: kvm",
+        why: "Đối chiếu với gói đã mua (số nhân, RAM, ổ đĩa) và xác định <b>KVM</b> hay container (OpenVZ/LXC). Ví dụ VPS lab: 1 nhân, 961Mi RAM (1GB – kernel giữ một phần), 20G, KVM, Xeon Platinum 8171M."
+      },
+      {
+        title: "[VPS] Đo tải CPU & steal (rảnh và giờ cao điểm)",
+        code: "uptime                     # load average 1/5/15 phút, so với nproc\nvmstat 1 5                 # cột: us sy id wa st\n# Steal trung bình 30 giây (chạy lại lúc 20-23h):\nvmstat 1 30 | awk 'NR>2 {s+=$16} END {print \"Steal trung binh:\", s/(NR-2) \"%\"}'",
+        why: "Cột vmstat: <b>us</b> (chương trình), <b>sy</b> (kernel), <b>id</b> (rảnh), <b>wa</b> (chờ ổ đĩa), <b>st</b> (bị VPS khác giành). Ghi lại các số này làm <b>baseline</b>.",
+        tip: "Nếu bản vmstat của bạn có ít cột hơn, đếm lại vị trí cột <code>st</code> trong dòng tiêu đề và sửa <code>$16</code>."
+      },
+      {
+        title: "[VPS] Đo hiệu năng bằng YABS",
+        code: "curl -sL https://yabs.sh | bash -s -- -g\n# -g: bỏ Geekbench (nặng, lâu, tự gửi kết quả lên Internet)",
+        why: "Đo <b>ổ đĩa</b> (fio) và <b>mạng</b> (iperf3) bằng số liệu thay vì tin quảng cáo. Cách đọc (ví dụ VPS lab):<br>• fio 4k: ~70k IOPS, ~290 MB/s → NVMe thật (SSD SATA thường 100–200 MB/s).<br>• iperf3 Singapore: ~190 Mbps, ping ~31 ms → vượt mức 100 Mbps quảng cáo.<br>• <b>AES-NI Enabled</b>: CPU mã hóa bằng phần cứng → SSH/HTTPS/VPN nhanh.<br>• <b>Uptime</b> phải khớp lần reboot cuối của bạn.",
+        tip: "Một kết quả mạng thấp lẻ tẻ (vd 1 tuyến châu Âu) thường do tuyến quốc tế lúc đó; <i>busy</i> = máy chủ đo bên kia bận."
+      },
+      {
+        title: "[VPS] Tra nguồn gốc IP (ASN / OSINT)",
+        code: "# IP của chính VPS: ASN, tổ chức, vị trí\ncurl -s https://ipinfo.io; echo\n# Tra một IP tấn công lấy từ VPS-1 (thay IP):\ncurl -s https://ipinfo.io/<IP-tan-cong>; echo",
+        why: "Xác minh nhà cung cấp (ví dụ VPS lab: AS151858 Interdigi, host IDATA, Đà Nẵng – khớp thông tin pháp nhân) và <b>làm giàu dữ liệu</b> cho IP tấn công: thuộc cloud/hosting nào, quốc gia nào. Kết hợp thêm <b>AbuseIPDB</b> để xem IP đã bị báo cáo bao nhiêu lần.",
+        tip: "Tra cứu thụ động như vậy là hợp pháp. <b>Không</b> quét hay tấn công ngược IP đó."
+      },
+      {
+        title: "Gắn giám sát uptime & ghi bảng baseline",
+        text: "Tạo tài khoản miễn phí <b>UptimeRobot</b> → New monitor → loại <b>Port</b> → IP VPS, port <b>22</b>, kiểm tra mỗi 5 phút. Sau đó ghi bảng baseline vào ô ghi chú: CPU/RAM/ổ đĩa, ảo hóa, steal (rảnh + cao điểm), load average, fio 4k, iperf3 Singapore, danh sách dịch vụ đang chạy, ASN.",
+        why: "Uptime đo bằng dữ liệu thật trong cả tháng là căn cứ để quyết định có thuê dài hạn không. Bảng baseline là mốc so sánh khi sau này nghi máy có vấn đề (chậm bất thường, dịch vụ lạ, CPU cao)."
+      }
+    ],
+    verify: [
+      "Chỉ có root + user của bạn đăng nhập được; UID 0 chỉ có root; sudo chỉ có user của bạn.",
+      "Không có cron/timer/dịch vụ lạ; đã tắt các dịch vụ thừa và ghi lại RAM trước/sau.",
+      "<code>free -h</code> có Swap 1.0Gi và vẫn còn sau khi reboot.",
+      "Có số liệu steal lúc rảnh và lúc 20–23h.",
+      "Có kết quả YABS và giải thích được 4k IOPS, tốc độ mạng, AES-NI.",
+      "Có ASN của VPS; UptimeRobot đang theo dõi port 22."
+    ],
+    questions: [
+      "Kể 4 kỹ thuật persistence trên Linux và lệnh để phát hiện từng cái.",
+      "Vì sao tài khoản có UID 0 nhưng không tên root là dấu hiệu nguy hiểm?",
+      "Steal time cao nói lên điều gì? Vì sao phải đo vào giờ cao điểm?",
+      "Vì sao 4k IOPS quan trọng hơn tốc độ đọc file lớn với máy chủ log?",
+      "Baseline giúp phát hiện cryptojacking như thế nào?",
+      "Vì sao nhà cung cấp VPS về kỹ thuật luôn có toàn quyền với máy của bạn? Điều đó ảnh hưởng gì đến cách bạn dùng VPS?"
+    ],
+    output: "Writeup <b>\"Kiểm kê & baseline VPS\"</b>: bảng kiểm kê (user, sudo, cron, dịch vụ – kết luận không có persistence), danh sách dịch vụ đã tắt + RAM trước/sau, bảng baseline hiệu năng (YABS, steal, load), ASN của VPS, uptime sau 1 tháng. <b>Che IP.</b>"
   }
 ]);

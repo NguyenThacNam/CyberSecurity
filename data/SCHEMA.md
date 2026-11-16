@@ -106,6 +106,9 @@ Lấy từ các mục "Câu hỏi sai / Câu trả lời sai / Câu hỏi chú �
   mitre: "T1110",             // tùy chọn, cho lab SOC
   optional: true,             // tùy chọn: lab không bắt buộc (vd cần VPS)
   pitfalls: ["Lỗi hay gặp …"],  // tùy chọn: danh sách lỗi hay gặp
+  keycards: [                 // BẮT BUỘC cho lab mới: "Kiến thức trọng tâm" – tự vào bộ ôn Kiến thức (topic "Lab <id>")
+    { front: "Câu hỏi?", def: "Đáp án", example: "…", trap: "…", interview: "…" }
+  ],
   theory: [                   // tùy chọn: lý thuyết đọc trước
     { title: "Least privilege", body: "…" }
   ]

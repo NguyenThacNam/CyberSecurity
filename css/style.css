@@ -231,6 +231,8 @@ select, input[type="number"], input[type="search"], textarea { font: inherit; co
 .theory summary { cursor: pointer; font-weight: 600; }
 .theory[open] summary { margin-bottom: 8px; }
 .pitfalls { border-color: var(--warn); background: var(--warn-soft); }
+.keypoints { border-color: var(--primary); }
+.keypoints summary { color: var(--primary); }
 .pitfalls summary { color: var(--warn); }
 .bul { padding-left: 1.3em; }
 .notes { width: 100%; min-height: 140px; resize: vertical; }

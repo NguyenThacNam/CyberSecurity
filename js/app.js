@@ -458,6 +458,13 @@
       (l.concepts && l.concepts.length ? '<div class="chips">' + l.concepts.map(function (c) { return '<span class="chip en">' + esc(c) + '</span>'; }).join("") + '</div>' : '') +
       (l.theory && l.theory.length ? '<details class="theory"><summary>📚 Lý thuyết dùng trong lab (' + l.theory.length + ' khái niệm) – đọc trước khi làm</summary>' +
         l.theory.map(function (t) { return '<div class="field"><div class="flabel">' + esc(t.title) + '</div><div class="fbody">' + t.body + '</div></div>'; }).join("") + '</details>' : '') +
+      (l.keycards && l.keycards.length ? '<details class="theory keypoints" open><summary>🎯 Kiến thức trọng tâm (' + l.keycards.length + ' thẻ) – đã tự thêm vào phần ôn Kiến thức</summary>' +
+        '<div class="list">' + l.keycards.map(function (k, i) {
+          var c = Store.state.srs["k-lab-" + l.id + "-" + (i + 1)];
+          return '<details class="item"><summary>' + levelDot(c) + '<span>' + k.front + '</span></summary>' +
+            DECKS.cards.back({ def: k.def, example: k.example, trap: k.trap, interview: k.interview }) + '</details>';
+        }).join("") + '</div>' +
+        '<div class="actions"><a class="btn primary sm" href="#/review?topic=' + encodeURIComponent("Lab " + l.id) + '">Ôn các thẻ của lab này</a></div></details>' : '') +
       (l.pitfalls && l.pitfalls.length ? '<details class="theory pitfalls"><summary>⚠️ Lỗi hay gặp (' + l.pitfalls.length + ')</summary><ul class="bul">' +
         l.pitfalls.map(function (p) { return '<li>' + p + '</li>'; }).join("") + '</ul></details>' : '') +
       '<div class="panel sticky-progress"><div class="row"><span>Tiến độ</span><b>' + doneN + '/' + steps.length + ' bước</b></div>' + bar(doneN, steps.length, "Bước") + '</div>' +
@@ -624,6 +631,27 @@
 
   window.addEventListener("hashchange", route);
   Store.onChange(function () { /* chỗ móc đồng bộ Firebase sau này */ });
+  /* Thẻ "Kiến thức trọng tâm" của từng lab -> vào bộ ôn Kiến thức (topic "Lab <id>") */
+  (function mergeLabCards() {
+    var labs = D("labs");
+    if (!window.DATA) window.DATA = {};
+    if (!Array.isArray(DATA.cards)) DATA.cards = [];
+    var have = {};
+    DATA.cards.forEach(function (c) { have[c.id] = true; });
+    labs.forEach(function (l) {
+      (l.keycards || []).forEach(function (k, i) {
+        var id = "k-lab-" + l.id + "-" + (i + 1);
+        if (have[id]) return;
+        DATA.cards.push({
+          id: id, track: l.track === "soc" || l.track === "mang" ? l.track : "chung",
+          course: "LAB", tier: 3, topic: "Lab " + l.id,
+          front: k.front, def: k.def, example: k.example || "", trap: k.trap || "", interview: k.interview || "",
+          terms: k.terms || []
+        });
+      });
+    });
+  })();
+
   applyTheme();
   route();
 })();
