@@ -32,7 +32,14 @@ DATA.roadmap = [
       { id: "r2-6", type: "lab", text: "N5 · GPO: chính sách mật khẩu, khóa tài khoản" },
       { id: "r2-7", type: "writeup", text: "Tài liệu cấu hình AD/GPO + ảnh chụp" },
       { id: "r2-8", type: "lab", text: "VPS-1 · Gia cố VPS Ubuntu (tùy chọn – nếu đã thuê VPS)", link: "#/lab/VPS-1" },
-      { id: "r2-9", type: "lab", text: "VPS-2 · Kiểm kê hệ thống & baseline hiệu năng (tùy chọn)", link: "#/lab/VPS-2" }
+      { id: "r2-9", type: "lab", text: "VPS-2 · Kiểm kê hệ thống & baseline hiệu năng (tùy chọn)", link: "#/lab/VPS-2" },
+      { id: "r2-10", type: "lab", text: "LINUX-1 · Điều hướng hệ thống & đọc file", link: "#/lab/LINUX-1" },
+      { id: "r2-11", type: "lab", text: "LINUX-2 · Lọc & tìm kiếm log (grep, find, pipe)", link: "#/lab/LINUX-2" },
+      { id: "r2-12", type: "lab", text: "LINUX-3 · Quản lý file, chuyển hướng output, lưu bằng chứng", link: "#/lab/LINUX-3" },
+      { id: "r2-13", type: "lab", text: "LINUX-4 · Phân quyền & sở hữu, SUID", link: "#/lab/LINUX-4" },
+      { id: "r2-14", type: "lab", text: "LINUX-5 · Quản lý user & group, sudo", link: "#/lab/LINUX-5" },
+      { id: "r2-15", type: "lab", text: "LINUX-6 · Tiến trình, dịch vụ & log – triage nhanh", link: "#/lab/LINUX-6" },
+      { id: "r2-16", type: "lab", text: "LINUX-7 · SQL trên log thật với SQLite", link: "#/lab/LINUX-7" }
     ]
   },
   {

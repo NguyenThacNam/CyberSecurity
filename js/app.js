@@ -429,7 +429,7 @@
     var labs = D("labs");
     if (!labs.length) return '<h1>🧪 Lab</h1>' + emptyNote("labs.js");
     var weeks = uniq(labs.map(function (l) { return l.week; })).sort();
-    return '<div class="pagehead"><div><h1>🧪 Lab thực hành</h1><p class="muted">Chạy trên máy nhà (VMware). Làm theo thứ tự; snapshot trước mỗi bài.</p></div></div>' +
+    return '<div class="pagehead"><div><h1>🧪 Lab thực hành</h1><p class="muted">Tuần 1: lab trên máy nhà (VMware) – snapshot trước mỗi bài. Tuần 2: lab trên VPS (VPS-1, VPS-2, LINUX-1…7). Mỗi lab có Kiến thức trọng tâm tự vào phần ôn.</p></div></div>' +
       weeks.map(function (w) {
         return '<h3 class="sec">Tuần ' + w + '</h3><div class="grid2">' + labs.filter(function (l) { return l.week === w; }).map(function (l) {
           var st = Store.state.labs[l.id] || { steps: {} };
